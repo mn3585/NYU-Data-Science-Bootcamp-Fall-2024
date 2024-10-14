@@ -1,0 +1,8 @@
+def sum_total(a, b):
+    return a + b
+
+num1 = int(input("Enter the 1st integer: "))
+num2 = int(input("Enter the 2nd integer: "))
+
+result = sum_total(num1, num2)
+print(f"The sum of {num1} and {num2} is: {result}")
