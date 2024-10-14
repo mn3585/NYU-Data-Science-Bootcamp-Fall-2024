@@ -1,0 +1,12 @@
+def count_vowel(word):
+    vowels = "aeiouAEIOU"
+    count = 0
+    for letter in word:
+        if letter in vowels:
+            count += 1
+    return count
+
+user_input = input("Enter your word: ")
+
+vowel_count = count_vowel(user_input)
+print(f"The number of vowels in '{user_input}' is: {vowel_count}")
