@@ -1,0 +1,68 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Read the dataset
+url = "https://data.cityofnewyork.us/api/views/6fi9-q3ta/rows.csv?accessType=DOWNLOAD"
+df = pd.read_csv(url)
+
+df.head()
+
+# Convert hour_beginning to datetime format
+df['hour_beginning'] = pd.to_datetime(df['hour_beginning'])
+#df['day_of_week'] = df['hour_beginning'].dt.day_name()
+
+# Filter data to include only weekdays
+weekdays = df[(df['hour_beginning'].dt.dayofweek >= 0) & (df['hour_beginning'].dt.dayofweek <= 4)] 
+
+# Aggregate pedestrian counts for each day of the week
+pedesterian_perday = weekdays.groupby(weekdays['hour_beginning'].dt.day_name())['Pedestrians'].sum()
+
+# Plotting the line graph
+plt.figure(figsize=(10, 6))
+weekday_counts.plot(kind='line', marker='o')
+plt.title("Average Pedestrian Counts by Day of the Week")
+plt.xlabel("Day of the Week")
+plt.ylabel("Average Pedestrian Count")
+plt.grid(True)
+plt.show()
+
+#2
+
+# Filter data for the Brooklyn Bridge in the year 2019
+brooklyn_2019_df = df[(df['location'] == 'Brooklyn Bridge') & (df['hour_beginning'].dt.year == 2019)]
+
+# Perform one-hot encoding for the 'weather_summary' column
+weather_encoded = pd.get_dummies(brooklyn_2019_df['weather_summary'])
+
+# Concatenate the one-hot encoded weather data with the original dataframe
+brooklyn_2019_df_encoded = pd.concat([brooklyn_2019_df, weather_encoded], axis=1)
+
+# Calculate correlation matrix for pedestrian counts and weather conditions
+correlation_matrix = brooklyn_2019_df_encoded[['Pedestrians'] + list(weather_encoded.columns)].corr()
+
+# Display the correlation matrix
+correlation_matrix
+
+#3
+# Custom function to categorize time of day
+def categorize_timeofday(hour):
+    if 6 <= hour < 12:
+        return 'Morning'
+    elif 12 <= hour < 18:
+        return 'Afternoon'
+    elif 18 <= hour < 24:
+        return 'Evening'
+    else:
+        return 'Night'
+
+# Create new column to store time of day categories
+df['time_of_day'] = df['hour_beginning'].dt.hour.apply(categorize_timeofday)
+
+# Aggregating pedestrian count throughout the day
+ped_counts_timeofday = df.groupby('time_of_day')['Pedestrians'].sum()
+
+print("Pedestrian Activity Patterns hereby:")
+print(ped_counts_timeofday)
+
+
+
