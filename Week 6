@@ -6,7 +6,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 
 # Load the dataset
-data = pd.read_csv("employee.csv")  # Ensure the dataset file path is correct
+data = pd.read_csv(r"C:\Users\Naznin\Downloads\employee.csv")  # Ensure the dataset file path is correct
 
 # Drop unnecessary columns: id, timestamp, and country
 data = data.drop(columns=['id', 'timestamp', 'country'])
@@ -24,7 +24,7 @@ for c in binary_cols:
     data[c] = data[c].replace(to_replace=['Yes'], value=1)
     data[c] = data[c].replace(to_replace=['No'], value=0)
 
-# encode categorical variables (employment_status, job_title, education, is_education_computer_related)
+# One-hot encode categorical variables (employment_status, job_title, education, is_education_computer_related)
 cat_cols = ['employment_status', 'job_title', 'education', 'is_education_computer_related']
 final_data = pd.get_dummies(data, columns=cat_cols, drop_first=True, dtype=int)
 
@@ -42,7 +42,7 @@ scaler.fit(X_train[num_cols])
 X_train[num_cols] = scaler.transform(X_train[num_cols])
 X_test[num_cols] = scaler.transform(X_test[num_cols])
 
-# Linear Regression Model
+# Fit a Linear Regression Model
 reg = LinearRegression()
 reg.fit(X_train, y_train)
 
@@ -50,4 +50,3 @@ reg.fit(X_train, y_train)
 y_test_pred = reg.predict(X_test)
 test_mse = mean_squared_error(y_test_pred, y_test) / np.mean(y_test)
 print("Test Mean Squared Error:", test_mse)
-
